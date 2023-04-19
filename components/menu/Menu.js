@@ -14,12 +14,14 @@ export default function Menu(props) {
       <div style={{
         display: "flex",
         justifyContent: "space-around",
-        alignItems: "center",
-        margin: "1rem",
+        alignItems: "",
+        margin: "2rem"
       }}>
-        <h1 style={{ color: "#2046A1", fontWeight: "bold" }}>TSHOP</h1>
+        <img src='../../phone.png' height='50' width='50'>
+        </img>
+        <h1 style={{margin:1,color: "#2046A1"}}>TSHOP</h1>
       </div>
-      <div style={{ margin: "1rem" }}>
+      <div style={{ margin: "1rem", marginTop:'1rem' }}>
         <h2 style={{ color: "#2046A1", fontWeight: "700" }}>Dashboard</h2>
         <Link href='/sanpham' style={{ textDecoration: 'none' }}>
           <div style={{
@@ -50,7 +52,7 @@ export default function Menu(props) {
           </div>
         </Link>
       </div>
-      <div style={{ marginTop: "5rem",alignContent:'center' }}>
+      <div style={{ marginTop: "2rem",alignContent:'center' }}>
           <Button style={{
             width: "100%",
             padding: "0.8rem",
