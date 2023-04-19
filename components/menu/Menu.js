@@ -52,9 +52,10 @@ export default function Menu(props) {
           </div>
         </Link>
       </div>
-      <div style={{ marginTop: "2rem",alignContent:'center' }}>
+      <div style={{ alignContent:'center' }}>
           <Button style={{
             width: "100%",
+            height:'40px',
             padding: "0.8rem",
             borderRadius: "20px",
             backgroundColor: "#2046A1",
