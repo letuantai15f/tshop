@@ -36,7 +36,7 @@ export default function Sanpham() {
     event.preventDefault();
     const gia_km=(gia*km)/100
     const dataSP={
-      tensp,mo_ta:mota,gia,gia_km,hinh:'../public/iphone.png'
+      tensp,mo_ta:mota,gia,gia_km,hinh:'../iphone.png'
     } 
     const data=await supabase.from('sanpham').insert(dataSP)
     if(data.status===201){
