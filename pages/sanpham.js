@@ -1,16 +1,51 @@
 import Menu from '@/components/menu/Menu'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
-import { Button, FormControl, Input, InputLabel } from '@mui/material';
-export default function sanpham() {
-  const rowStyle = { background: 'black' };
+import { Box, Button, FormControl, Input, InputLabel, Modal, TextField } from '@mui/material';
+import { supabase } from '@/client';
 
-  // set background colour on even rows again, this looks bad, should be using CSS classes
-  const getRowStyle = params => {
-    if (params.node.rowIndex % 2 === 0) {
-      return { background: 'red' };
-    }
+export default function Sanpham() {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [data, setData] = useState([])
+  const [tensp,setTenSP]=useState('')
+  const [gia,setGia]=useState('')
+  const [km,setKM]=useState('')
+  const [mota,setMota]=useState('')
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #D9D9D9',
+    boxShadow: 24,
+    p: 4,
+    borderRadius: '10px'
   };
+  useEffect(() => {
+    fetchData();
+  }, [])
+  const fetchData = async () => {
+    const { data, erro } = await supabase.from('sanpham').select('*')
+    setData(data)
+  }
+  const handleSubmit=async(event)=>{
+    event.preventDefault();
+    const gia_km=(gia*km)/100
+    const dataSP={
+      tensp,mo_ta:mota,gia,gia_km,hinh:'../public/iphone.png'
+    } 
+    const data=await supabase.from('sanpham').insert(dataSP)
+    if(data.status===201){
+      handleClose()
+      alert('Thành công')
+    }
+
+
+  }
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
@@ -29,15 +64,12 @@ export default function sanpham() {
       width: 160,
     },
     {
-      field: 'img',
-      headerName: 'Hình chính',
-      width: 90,
+      field: 'hinh',
+      headerName: 'URL Hình',
+      width: 180,
     },
   ];
-  const rows = [
-    { id: 1, tensp: 'Iphone', mo_ta: 'Iphone 12pro max', gia: 35000000, gia_km: 30000000 },
-    { id: 2, tensp: 'Iphone', mo_ta: 'Iphone 13pro max', gia: 45000000, gia_km: 40000000 },
-  ];
+ 
 
   return (
     <div style={{
@@ -87,7 +119,7 @@ export default function sanpham() {
               }}>Lọc</Button>
             </FormControl>
           </div>
-          
+
         </div>
         <div style={{
           display: "grid",
@@ -107,7 +139,38 @@ export default function sanpham() {
                 borderRadius: "10px",
                 backgroundColor: "#2046A1",
                 color: "#fff", margin: "1rem"
-              }}>Thêm</Button>
+              }} onClick={handleOpen}>Thêm</Button>
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={style}>
+                  <div>
+                    <h5>Thông tin sản phẩm</h5>
+                  </div>
+                  <div style={{}}>
+                    <form onSubmit={handleSubmit}>
+                      <TextField style={{ width: '100%', margin: '10px' }} id="outlined-basic" name='ten_sp' label="Tên sản phẩm" variant="outlined" value={tensp} onInput={(e)=>setTenSP(e.target.value)} />
+                      <TextField style={{ width: '100%', margin: '10px' }} id="outlined-basic" name='gia' label="Giá" variant="outlined" value={gia} onInput={(e)=>setGia(e.target.value)}/>
+                      <TextField style={{ width: '100%', margin: '10px' }} id="outlined-basic" name='km' label="Khuyến mãi" variant="outlined" value={km} onInput={(e)=>setKM(e.target.value)} />
+                      <TextField style={{ width: '100%', margin: '10px' }} id="outlined-basic" name='mota' label="Mô tả" variant="outlined" value={mota} onInput={(e)=>setMota(e.target.value)} />
+                      <Button style={{
+                        width: '100%', margin: '10x',
+                        height: '30px',
+                        padding: "0.8rem",
+                        borderRadius: "15px",
+                        backgroundColor: "#2046A1",
+                        color: "#fff",
+                      }} type='submit'>Gửi</Button>
+                    </form>
+
+
+                  </div>
+
+                </Box>
+              </Modal>
             </div>
 
           </div>
@@ -115,12 +178,12 @@ export default function sanpham() {
           <div style={{ height: 400, width: '100%' }}>
 
             <DataGrid
-              rows={rows}
+              rows={data}
               columns={columns}
               pageSize={5}
               rowsPerPageOptions={[5]}
               checkboxSelection
-              style={{ borderRadius: '20px',}}
+              style={{ borderRadius: '20px', }}
             />
           </div>
         </div>
@@ -129,3 +192,4 @@ export default function sanpham() {
     </div>
   )
 }
+

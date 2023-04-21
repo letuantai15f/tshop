@@ -1,39 +1,43 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Menu from '@/components/menu/Menu'
 import { DataGrid } from '@mui/x-data-grid';
-export default function donhang() {
-
+import { Button, FormControl, Input, InputLabel } from '@mui/material';
+import { supabase } from '@/client';
+export default function Donhang() {
+    const [data, setData] = useState([])
+    useEffect(() => {
+        fetchData();
+      }, [])
+      const fetchData = async () => {
+        const { data, erro } = await supabase.from('donhang').select('*')
+        setData(data)
+      }
     const columns = [
         { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'firstName', headerName: 'First name', width: 130 },
-        { field: 'lastName', headerName: 'Last name', width: 130 },
+        { field: 'hoten', headerName: 'Họ tên', width: 130 },
+        { field: 'sdt', headerName: 'SDT', width: 130 },
         {
-            field: 'age',
-            headerName: 'Age',
-            type: 'number',
+            field: 'email',
+            headerName: 'Email',
             width: 90,
         },
         {
-            field: 'fullName',
-            headerName: 'Full name',
-            description: 'This column has a value getter and is not sortable.',
-            sortable: false,
+            field: 'diachi',
+            headerName: 'Địa chỉ',
             width: 160,
-            valueGetter: (params) =>
-                `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+        },
+        {
+            field: 'tensp',
+            headerName: 'Sản phẩm',
+            width: 160,
+        },
+        {
+            field: 'gia',
+            headerName: 'Giá',
+            width: 160,
         },
     ];
-    const rows = [
-        { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-        { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-        { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-        { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-        { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-        { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-        { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-        { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-        { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-    ];
+    
 
     return (
         <div style={{
@@ -52,19 +56,85 @@ export default function donhang() {
                     alignItems: "center",
                     justifyContent: "space-evenly",
                     gap: "2rem",
-                    marginTop: "8rem",
+
                 }}
             >
-                <div style={{ height: 400, width: '100%' }}>
-                    <h2 style={{ color: "#2046A1", fontWeight: "bold" }}>Danh sách đơn hàng</h2>
-                    <DataGrid
-                        rows={rows}
-                        columns={columns}
-                        pageSize={5}
-                        rowsPerPageOptions={[5]}
-                        checkboxSelection
-                    />
+                <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "auto auto auto auto ",
+                    gap: "2rem",
+                    backgroundColor: "#F7F7F7",
+                    padding: "2rem",
+                    borderRadius: "20px",
+                    width: "95%",
+                }}>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "1rem", border: "1px", textAlign: 'center' }}>
+                        <FormControl>
+                            <InputLabel htmlFor="tensp">Họ tên</InputLabel>
+                            <Input id="ho_ten" aria-describedby="my-helper-text" />
+                        </FormControl>
+
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "1rem", border: "1px", textAlign: 'center' }}>
+                        <FormControl>
+                            <InputLabel htmlFor="gia">SDT</InputLabel>
+                            <Input id="sdt" aria-describedby="my-helper-text" />
+                        </FormControl>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "1rem", border: "1px", textAlign: 'center' }}>
+                        <FormControl>
+                            <InputLabel htmlFor="gia">Email</InputLabel>
+                            <Input id="email" aria-describedby="my-helper-text" />
+                        </FormControl>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "1rem", border: "1px", textAlign: 'center' }}>
+                        <FormControl>
+                            <Button style={{
+                                width: "80px", height: '20px',
+                                padding: "0.8rem",
+                                borderRadius: "10px",
+                                backgroundColor: "#2046A1",
+                                color: "#fff", margin: "1rem"
+                            }}>Lọc</Button>
+                        </FormControl>
+                    </div>
+
                 </div>
+                <div style={{
+                    display: "grid",
+                    backgroundColor: "#F7F7F7",
+                    borderRadius: "20px",
+                    width: "100%",
+                }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "auto auto auto", gap: '2rem' }} >
+                        <div></div>
+                        <div>
+                            <h2 style={{ color: "#2046A1", fontWeight: "bold" }}>Danh sách đơn hàng</h2>
+                        </div>
+                        <div>
+                            <Button style={{
+                                width: "80px", height: '20px',
+                                padding: "0.8rem",
+                                borderRadius: "10px",
+                                backgroundColor: "#2046A1",
+                                color: "#fff", margin: "1rem"
+                            }}>Thêm</Button>
+                        </div>
+
+                    </div>
+                    <div style={{ height: 400, width: '100%' }}>
+                        <DataGrid
+                            rows={data}
+                            columns={columns}
+                            pageSize={5}
+                            rowsPerPageOptions={[5]}
+                            checkboxSelection
+                            style={{ borderRadius: '20px',}}
+                        />
+                    </div>
+                </div>
+
             </div>
         </div>
     )
